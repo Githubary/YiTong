@@ -110,6 +110,9 @@ public class UserController {
         // 解码Header并检查角色是否为admin
         // 使用Base64解码authHeader，然后检查是否包含"role":"admin"
         try {
+            if(StringUtils.isBlank(request.getHeader("Authorization"))){
+                return false;
+            }
             byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization"));
             String decodedString = new String(decodedBytes);
             Map<String, String> userInfo = JSON.parseObject(decodedString, new TypeReference<HashMap<String, String>>() {
