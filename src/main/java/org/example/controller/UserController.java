@@ -119,10 +119,16 @@ public class UserController {
         if (request.getHeader("Authorization") == null) {
             return -1;
         }
-        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization"));
-        String decodedString = new String(decodedBytes);
-        Map<String,Object> userInfo = JSON.parseObject(decodedString, new TypeReference<HashMap<String,Object>>() {});
-        return (int) userInfo.get("userId");
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization"));
+            String decodedString = new String(decodedBytes);
+            Map<String, Object> userInfo = JSON.parseObject(decodedString, new TypeReference<HashMap<String, Object>>() {
+            });
+            return (int) userInfo.get("userId");
+        } catch (Exception e) {
+            log.error("鉴权发生异常：error:", e);
+            return -1;
+        }
     }
 
     private Map<Integer, UserAccess> loadAccessMapFromFile() {
